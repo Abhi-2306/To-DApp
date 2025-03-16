@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from '@/config';
+import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 const queryClient = new QueryClient();
@@ -17,7 +18,12 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}) {
+  }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>

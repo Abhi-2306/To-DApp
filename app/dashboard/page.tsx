@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -30,13 +30,26 @@ import { useTaskContract } from "@/hooks/useTaskContract";
 
 export default function Dashboard() {
   const isAuthenticated = useAuthCheck(true);
-  const { tasks, createTask, toggleTask, deleteTask } = useTaskContract();
+  const { tasks, createTask, toggleTask, deleteTask, refetchTasks } = useTaskContract();
   const [newTask, setNewTask] = useState({ title: "", description: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLoading(true);
+      refetchTasks();
+      setLoading(false);
+    }
+  }, [isAuthenticated, refetchTasks]);
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   const completedTasks = tasks.filter(task => task.completed).length;

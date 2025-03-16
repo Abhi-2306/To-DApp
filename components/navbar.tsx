@@ -7,12 +7,18 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAccount, useDisconnect } from "wagmi";
 import WalletAddress from "./WalletAddress";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const pathname = usePathname();
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleAuthAction = async () => {
     if (isConnected) {
@@ -22,6 +28,10 @@ export function Navbar() {
       router.push('/sign-in');
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
